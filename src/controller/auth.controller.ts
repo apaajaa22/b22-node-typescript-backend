@@ -9,7 +9,7 @@ const {APP_KEY} = process.env
 
 export const login = async(req:Request,res:Response) => {
   const { email, password } = req.body
-  const findEmail:any = await checkEmailModel(email)
+  const findEmail:any[] = await checkEmailModel(email)
   const checkEmail = findEmail[0][0]
   if (!checkEmail){
     return response(res,'Email not found', checkEmail)
@@ -27,7 +27,7 @@ export const login = async(req:Request,res:Response) => {
 
 export const register = async (req:Request,res:Response) => {
   const data = req.body
-  const findEmail:any = await checkEmailModel(data.email)
+  const findEmail:any[] = await checkEmailModel(data.email)
   const checkEmail = findEmail[0][0]
   if (checkEmail){
     return response(res,'email already in use')
