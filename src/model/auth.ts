@@ -16,6 +16,6 @@ export const registerModel = async(data: MkUser) => {
     [data.name, data.email, data.password])
 }
 export const checkEmailModel = async(email: Email) => {
-    return (await db).execute(`SELECT users.id ,users.email, users.name FROM ${table} WHERE users.email = ?`,
+    return (await db).execute(`SELECT users.id ,users.email, users.password, users.name FROM ${table} WHERE users.email = ?`,
     [email])
 }
