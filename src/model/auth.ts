@@ -11,6 +11,16 @@ interface Email {
   email: string
 }
 
+interface GeneratePass {
+  email: string;
+  code: string
+}
+
+interface ForgotPassword {
+  password: string;
+  code: string
+}
+
 export const registerModel = async(data: MkUser) => {
     return (await db).execute(`INSERT INTO ${table} (name, email, password) VALUES (?,?,?)`,
     [data.name, data.email, data.password])
@@ -18,4 +28,14 @@ export const registerModel = async(data: MkUser) => {
 export const checkEmailModel = async(email: Email) => {
     return (await db).execute(`SELECT users.id ,users.email, users.password, users.name FROM ${table} WHERE users.email = ?`,
     [email])
+}
+export const generateCodePassword = async (data:GeneratePass ) => {
+  return (await db).execute(`UPDATE ${table} set users.codePassword= ? where users.email=?`, [data.code, data.email])
+}
+export const changeForgotPasswordModel = async (data:ForgotPassword ) => {
+  return (await db).execute(`UPDATE ${table} set users.password= ? where users.codePassword=?`, [data.password, data.code])
+}
+
+export const changeCodeToNull = async (data:ForgotPassword ) => {
+  return (await db).execute(`UPDATE ${table} set users.codePassword=? where users.codePassword=?`, [null, data.code])
 }

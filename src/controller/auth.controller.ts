@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import response from '../helpers/response'
-import { checkEmailModel, registerModel } from '../model/auth'
+import { checkEmailModel, generateCodePassword, registerModel, changeForgotPasswordModel,changeCodeToNull } from '../model/auth'
 import bcrypt from 'bcrypt'
 import dotenv from 'dotenv'
 import jwt from 'jsonwebtoken'
@@ -36,4 +36,36 @@ export const register = async (req:Request,res:Response) => {
     await registerModel(data)
     return response(res,'Register Success')
   }
+}
+
+export const generatePasswordCode = async (req: Request,res:Response) => {
+  const data = req.body
+  const findEmail:any[] = await checkEmailModel(data.email)
+  const checkEmail = findEmail[0][0]
+  if (!checkEmail){
+    return response(res,'email not found')
+  }else {
+    const code = Math.floor(Math.random() * 9999)
+    const form:any = {
+      code,
+      email: data.email
+    }
+    await generateCodePassword(form)
+    return response(res,`forgot password code is ${code}`)
+  }
+}
+
+export const changeForgotPassword = async (req: Request,res:Response) => {
+  const data = req.body
+  data.password = await bcrypt.hash(data.password, await bcrypt.genSalt())
+  const form = {
+    password: data.password,
+    code: data.code
+  }
+  const results:any = await changeForgotPasswordModel(form)
+  if (results[0].affectedRows > 0) {
+    await changeCodeToNull(form)
+    return response(res,`change password success`)
+  }
+  return response(res,`invalid forgot password code`, null, 400)
 }

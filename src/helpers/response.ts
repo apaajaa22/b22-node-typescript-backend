@@ -8,7 +8,7 @@ const response = (res:Response,message:string,data?:object | any[] | null,status
     if(status >= 400){
         success = false
     }
-    return res.json({
+    return res.status(status).json({
         success,
         message,
         data
