@@ -11,7 +11,6 @@ import {
 import bcrypt from 'bcrypt'
 import dotenv from 'dotenv'
 import jwt from 'jsonwebtoken'
-import { RowDataPacket } from 'mysql2'
 dotenv.config()
 const { APP_KEY } = process.env
 
@@ -20,7 +19,7 @@ export const login = async (req: Request, res: Response) => {
   const findEmail: any[] = await checkEmailModel(email)
   const checkEmail = findEmail[0][0]
   if (!checkEmail) {
-    return response(res, 'Email not found', checkEmail)
+    return response(res, 'Email not found', checkEmail, 404)
   } else {
     const compare = await bcrypt.compare(password, checkEmail.password)
     if (compare) {
@@ -38,11 +37,11 @@ export const register = async (req: Request, res: Response) => {
   const findEmail: any[] = await checkEmailModel(data.email)
   const checkEmail = findEmail[0][0]
   if (checkEmail) {
-    return response(res, 'email already in use')
+    return response(res, 'email already in use', null, 400)
   } else {
     data.password = await bcrypt.hash(data.password, await bcrypt.genSalt())
     await registerModel(data)
-    return response(res, 'Register Success')
+    return response(res, 'Register Success', null, 200)
   }
 }
 
@@ -51,7 +50,7 @@ export const generatePasswordCode = async (req: Request, res: Response) => {
   const findEmail: any[] = await checkEmailModel(data.email)
   const checkEmail = findEmail[0][0]
   if (!checkEmail) {
-    return response(res, 'email not found')
+    return response(res, 'email not found', null, 404)
   } else {
     const code = Math.floor(Math.random() * 9999)
     const form: any = {
@@ -59,7 +58,7 @@ export const generatePasswordCode = async (req: Request, res: Response) => {
       email: data.email,
     }
     await generateCodePassword(form)
-    return response(res, `forgot password code is ${code}`)
+    return response(res, `forgot password code is ${code}`, null, 200)
   }
 }
 
@@ -74,14 +73,14 @@ export const changeForgotPassword = async (req: Request, res: Response) => {
   const results: any = await changeForgotPasswordModel(form)
   if (results[0].affectedRows > 0) {
     await changeCodeToNull(form)
-    return response(res, `change password success`)
+    return response(res, `change password success`, null, 200)
   }
   return response(res, `invalid forgot password code or email`, null, 400)
 }
 
 export const getProfileLogin = async (req: Request, res: Response) => {
   const { id } = req.authUser
-  const results:any = await getProfile(id)
+  const results: any = await getProfile(id)
   const user = results[0][0]
   return response(res, 'Data User', user, 200)
 }
