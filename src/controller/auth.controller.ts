@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import response from '../helpers/response'
-import { checkEmailModel, generateCodePassword, registerModel, changeForgotPasswordModel,changeCodeToNull } from '../model/auth'
+import { checkEmailModel, generateCodePassword, registerModel, changeForgotPasswordModel,changeCodeToNull } from '../model/users.model'
 import bcrypt from 'bcrypt'
 import dotenv from 'dotenv'
 import jwt from 'jsonwebtoken'
@@ -17,7 +17,7 @@ export const login = async(req:Request,res:Response) => {
     const compare = await bcrypt.compare(password, checkEmail.password)
     if(compare){
       const payload = { id: checkEmail.id, email: checkEmail.email }
-    const token = jwt.sign(payload, APP_KEY, { expiresIn: '2 day' })
+    const token = jwt.sign(payload, APP_KEY || '', { expiresIn: '2 day' })
     return response(res, 'Login success', { token }, 200)
     }else{
       return response(res, 'Wrong email or password', null , 400)
