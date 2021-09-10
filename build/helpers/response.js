@@ -8,7 +8,7 @@ var response = function (res, message, data, status) {
     if (status >= 400) {
         success = false;
     }
-    return res.json({
+    return res.status(status).json({
         success: success,
         message: message,
         data: data

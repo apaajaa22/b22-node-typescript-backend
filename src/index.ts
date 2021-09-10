@@ -7,6 +7,12 @@ app.use(express.urlencoded({ extended: false }))
 
 app.use(cors())
 app.use('/', router)
+app.get('/', (req, res) => {
+  return res.json({
+    success: true,
+    message: 'Backend is running well'
+  })
+})
 app.listen(8080, () => {
     // tslint:disable-next-line: no-console
     console.log('app listen to 8080')

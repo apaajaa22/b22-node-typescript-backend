@@ -10,7 +10,7 @@ import {
 } from '../model/users.model'
 import bcrypt from 'bcrypt'
 import dotenv from 'dotenv'
-import jwt from 'jsonwebtoken'
+import jwt, { JwtHeader } from 'jsonwebtoken'
 import { validationResult } from 'express-validator'
 dotenv.config()
 const { APP_KEY } = process.env
@@ -95,7 +95,7 @@ export const changeForgotPassword = async (req: Request, res: Response) => {
   return response(res, `invalid forgot password code or email`, null, 400)
 }
 
-export const getProfileLogin = async (req: Request, res: Response) => {
+export const getProfileLogin = async (req: Request | any , res: Response) => {
   const { id } = req.authUser
   const results: any = await getProfile(id)
   const user = results[0][0]

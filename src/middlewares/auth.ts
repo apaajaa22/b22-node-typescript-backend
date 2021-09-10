@@ -5,7 +5,7 @@ import dotenv from 'dotenv'
 const {APP_KEY} = process.env
 dotenv.config()
 
-const auth = (req:Request, res:Response, next:NextFunction) => {
+const auth = (req:Request | any, res:Response, next:NextFunction) => {
   if (req.headers?.authorization) {
     if (req.headers.authorization.startsWith('Bearer')) {
       try {
