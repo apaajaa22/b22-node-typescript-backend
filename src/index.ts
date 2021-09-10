@@ -4,6 +4,7 @@ import cors from 'cors'
 
 const app = express()
 app.use(express.urlencoded({ extended: false }))
+const { PORT } = process.env
 
 app.use(cors())
 app.use('/', router)
@@ -13,7 +14,7 @@ app.get('/', (req, res) => {
     message: 'Backend is running well'
   })
 })
-app.listen(8080, () => {
+app.listen(PORT, () => {
     // tslint:disable-next-line: no-console
-    console.log('app listen to 8080')
+    console.log(`app listen to ${PORT}`)
 })
