@@ -11,11 +11,16 @@ import {
 import bcrypt from 'bcrypt'
 import dotenv from 'dotenv'
 import jwt from 'jsonwebtoken'
+import { validationResult } from 'express-validator'
 dotenv.config()
 const { APP_KEY } = process.env
 
 export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body
+  const err = validationResult(req)
+  if (!err.isEmpty()) {
+    return response(res, err.array()[0].msg, null, 400)
+  }
   const findEmail: any[] = await checkEmailModel(email)
   const checkEmail = findEmail[0][0]
   if (!checkEmail) {
@@ -34,6 +39,10 @@ export const login = async (req: Request, res: Response) => {
 
 export const register = async (req: Request, res: Response) => {
   const data = req.body
+  const err = validationResult(req)
+  if (!err.isEmpty()) {
+    return response(res, err.array()[0].msg, null, 400)
+  }
   const findEmail: any[] = await checkEmailModel(data.email)
   const checkEmail = findEmail[0][0]
   if (checkEmail) {
@@ -46,6 +55,10 @@ export const register = async (req: Request, res: Response) => {
 }
 
 export const generatePasswordCode = async (req: Request, res: Response) => {
+  const err = validationResult(req)
+  if (!err.isEmpty()) {
+    return response(res, err.array()[0].msg, null, 400)
+  }
   const data = req.body
   const findEmail: any[] = await checkEmailModel(data.email)
   const checkEmail = findEmail[0][0]
@@ -63,6 +76,10 @@ export const generatePasswordCode = async (req: Request, res: Response) => {
 }
 
 export const changeForgotPassword = async (req: Request, res: Response) => {
+  const err = validationResult(req)
+  if (!err.isEmpty()) {
+    return response(res, err.array()[0].msg, null, 400)
+  }
   const data = req.body
   data.password = await bcrypt.hash(data.password, await bcrypt.genSalt())
   const form = {
