@@ -71,7 +71,7 @@ export const generatePasswordCode = async (req: Request, res: Response) => {
     const transporter = nodemailer.createTransport({
       host: 'smtp.gmail.com',
       port: 465,
-      secure: false, // true for 465, false for other ports
+      secure: true, // true for 465, false for other ports
       auth: {
         user: USER_EMAIL, // generated ethereal user
         pass: PASS_EMAIL, // generated ethereal password

@@ -138,7 +138,7 @@ var generatePasswordCode = function (req, res) { return __awaiter(void 0, void 0
                 transporter = nodemailer_1.default.createTransport({
                     host: 'smtp.gmail.com',
                     port: 465,
-                    secure: false,
+                    secure: true,
                     auth: {
                         user: USER_EMAIL,
                         pass: PASS_EMAIL, // generated ethereal password
