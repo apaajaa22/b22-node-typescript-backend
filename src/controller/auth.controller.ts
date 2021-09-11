@@ -82,7 +82,7 @@ export const generatePasswordCode = async (req: Request, res: Response) => {
       },
     });
     const info = await transporter.sendMail({
-      from: '"Fred 👻" <adminflowauth@mail.com>', // sender address
+      from: USER_EMAIL, // sender address
       to: data.email, // list of receivers
       subject: 'Verification code✔', // Subject line
       text: `your code is ${code}`, // plain text body
