@@ -14,7 +14,7 @@ import jwt, { JwtHeader } from 'jsonwebtoken'
 import { validationResult } from 'express-validator'
 import nodemailer from 'nodemailer'
 dotenv.config()
-const { APP_KEY, USER_EMAIL, PASS_EMAIL } = process.env
+const { APP_KEY } = process.env
 
 export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body
@@ -69,31 +69,27 @@ export const generatePasswordCode = async (req: Request, res: Response) => {
     const code = Math.floor(Math.random() * 9999)
     const testAccount = await nodemailer.createTestAccount();
     const transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
-      port: 465,
-      secure: true, // true for 465, false for other ports
+      host: 'smtp.ethereal.email',
+      port: 587,
+      secure: false, // true for 465, false for other ports
       auth: {
-        user: USER_EMAIL, // generated ethereal user
-        pass: PASS_EMAIL, // generated ethereal password
+        user: testAccount.user, // generated ethereal user
+        pass: testAccount.pass, // generated ethereal password
       },
     });
     const info = await transporter.sendMail({
-      from: USER_EMAIL, // sender address
+      from: '"Fred Foo 👻" <foo@example.com>', // sender address
       to: data.email, // list of receivers
       subject: 'Hello ✔', // Subject line
       text: `forgot password code is ${code}`, // plain text body
       html: '<b>Hello world?</b>', // html body
     });
-    if(info.messageId){
-      const form: any = {
-        code,
-        email: data.email,
-      }
-      await generateCodePassword(form)
-      return response(res, `forgot password code is ${code}`, null, 200)
-    }else {
-      return response(res, `err`, null, 400)
+    const form: any = {
+      code,
+      email: data.email,
     }
+    await generateCodePassword(form)
+    return response(res, `forgot password code is ${code}`, null, 200)
   }
 }
 
