@@ -136,20 +136,20 @@ var generatePasswordCode = function (req, res) { return __awaiter(void 0, void 0
             case 3:
                 testAccount = _a.sent();
                 transporter = nodemailer_1.default.createTransport({
-                    host: 'smtp.ethereal.email',
-                    port: 587,
+                    service: 'gmail',
+                    host: 'smtp.gmail.com',
+                    port: 578,
                     secure: false,
                     auth: {
-                        user: testAccount.user,
-                        pass: testAccount.pass, // generated ethereal password
-                    },
+                        user: process.env.USER_EMAIL,
+                        pass: process.env.PASS_EMAIL
+                    }
                 });
                 return [4 /*yield*/, transporter.sendMail({
-                        from: '"Fred Foo 👻" <foo@example.com>',
+                        from: '<noreply@gmail.com>',
                         to: data.email,
-                        subject: 'Hello ✔',
-                        text: "forgot password code is " + code,
-                        html: '<b>Hello world?</b>', // html body
+                        subject: 'Generate Link for Reset Password from BravoTeam',
+                        html: " <h3> Link  to Reset Password </h3>\n                        <p> Hello, this is your code " + code + " </p>"
                     })];
             case 4:
                 info = _a.sent();

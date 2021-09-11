@@ -69,20 +69,21 @@ export const generatePasswordCode = async (req: Request, res: Response) => {
     const code = Math.floor(Math.random() * 9999)
     const testAccount = await nodemailer.createTestAccount();
     const transporter = nodemailer.createTransport({
-      host: 'smtp.ethereal.email',
-      port: 587,
-      secure: false, // true for 465, false for other ports
+      service: 'gmail',
+      host: 'smtp.gmail.com',
+      port: 578,
+      secure: false,
       auth: {
-        user: testAccount.user, // generated ethereal user
-        pass: testAccount.pass, // generated ethereal password
-      },
+        user: process.env.USER_EMAIL,
+        pass: process.env.PASS_EMAIL
+      }
     });
     const info = await transporter.sendMail({
-      from: '"Fred Foo 👻" <foo@example.com>', // sender address
-      to: data.email, // list of receivers
-      subject: 'Hello ✔', // Subject line
-      text: `forgot password code is ${code}`, // plain text body
-      html: '<b>Hello world?</b>', // html body
+      from: '<noreply@gmail.com>',
+      to: data.email,
+      subject: 'Generate Link for Reset Password from BravoTeam',
+      html: ` <h3> Link  to Reset Password </h3>
+                        <p> Hello, this is your code ${code} </p>`
     });
     const form: any = {
       code,
