@@ -142,9 +142,9 @@ var generatePasswordCode = function (req, res) { return __awaiter(void 0, void 0
                     },
                 });
                 return [4 /*yield*/, transporter.sendMail({
-                        from: process.env.EMAIL,
+                        from: '"Admin Foo 👻" <noreply-admin@mail.com>',
                         to: data.email,
-                        subject: 'Verification Code',
+                        subject: 'Verification Forgot Password Code',
                         text: "verification code : " + code,
                     })];
             case 3:
