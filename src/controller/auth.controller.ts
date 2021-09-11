@@ -87,8 +87,12 @@ export const generatePasswordCode = async (req: Request, res: Response) => {
       subject: 'Verification code✔', // Subject line
       text: `your code is ${code}`, // plain text body
     });
-    await generateCodePassword(form)
-    return response(res, `forgot password code is ${code}`, null, 200)
+    try{
+      await generateCodePassword(form)
+      return response(res, `forgot password code is ${code}`, null, 200)
+    }catch (err:any){
+      return response(res, err, null, 400)
+    }
   }
 }
 
