@@ -140,6 +140,7 @@ var generatePasswordCode = function (req, res) { return __awaiter(void 0, void 0
                         user: process.env.USER_EMAIL,
                         pass: process.env.PASS_EMAIL,
                     },
+                    service: 'gmail'
                 });
                 return [4 /*yield*/, transporter.sendMail({
                         from: '<noreply@gmail.com>',
