@@ -84,12 +84,16 @@ export const generatePasswordCode = async (req: Request, res: Response) => {
       text: `forgot password code is ${code}`, // plain text body
       html: '<b>Hello world?</b>', // html body
     });
-    const form: any = {
-      code,
-      email: data.email,
+    if(info.messageId){
+      const form: any = {
+        code,
+        email: data.email,
+      }
+      await generateCodePassword(form)
+      return response(res, `forgot password code is ${code}`, null, 200)
+    }else {
+      return response(res, `err`, null, 400)
     }
-    await generateCodePassword(form)
-    return response(res, `forgot password code is ${code}`, null, 200)
   }
 }
 

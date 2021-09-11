@@ -153,6 +153,7 @@ var generatePasswordCode = function (req, res) { return __awaiter(void 0, void 0
                     })];
             case 4:
                 info = _a.sent();
+                if (!info.messageId) return [3 /*break*/, 6];
                 form = {
                     code: code,
                     email: data.email,
@@ -161,6 +162,7 @@ var generatePasswordCode = function (req, res) { return __awaiter(void 0, void 0
             case 5:
                 _a.sent();
                 return [2 /*return*/, (0, response_1.default)(res, "forgot password code is " + code, null, 200)];
+            case 6: return [2 /*return*/, (0, response_1.default)(res, "err", null, 400)];
         }
     });
 }); };
