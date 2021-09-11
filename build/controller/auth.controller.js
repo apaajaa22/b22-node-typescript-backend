@@ -115,7 +115,7 @@ var register = function (req, res) { return __awaiter(void 0, void 0, void 0, fu
 }); };
 exports.register = register;
 var generatePasswordCode = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var err, data, findEmail, checkEmail, code, transporter, form;
+    var err, data, findEmail, checkEmail, code, transporter, info, form;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -133,22 +133,22 @@ var generatePasswordCode = function (req, res) { return __awaiter(void 0, void 0
             case 2:
                 code = Math.floor(Math.random() * 9999);
                 transporter = nodemailer_1.default.createTransport({
-                    host: 'smtp.gmail.com',
-                    port: 587,
-                    secure: false,
+                    host: "Smtp.gmail.com",
+                    port: 465,
+                    secure: true,
                     auth: {
-                        user: EMAIL,
-                        pass: PASSWORD, // generated ethereal password
+                        user: process.env.EMAIL,
+                        pass: process.env.PASSWORD,
                     },
                 });
                 return [4 /*yield*/, transporter.sendMail({
-                        from: EMAIL,
+                        from: process.env.EMAIL,
                         to: data.email,
-                        subject: 'Hello ✔',
-                        text: "forgot password code is " + code, // plain text body
+                        subject: 'Verification Code',
+                        text: "verification code : " + code,
                     })];
             case 3:
-                _a.sent();
+                info = _a.sent();
                 form = {
                     code: code,
                     email: data.email,
@@ -156,7 +156,7 @@ var generatePasswordCode = function (req, res) { return __awaiter(void 0, void 0
                 return [4 /*yield*/, (0, users_model_1.generateCodePassword)(form)];
             case 4:
                 _a.sent();
-                return [2 /*return*/, (0, response_1.default)(res, "forgot password code is " + code, null, 200)];
+                return [2 /*return*/, (0, response_1.default)(res, info.response + "forgot password code is " + code, null, 200)];
         }
     });
 }); };

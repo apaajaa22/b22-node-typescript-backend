@@ -68,26 +68,26 @@ export const generatePasswordCode = async (req: Request, res: Response) => {
   } else {
     const code = Math.floor(Math.random() * 9999)
     const transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
-      port: 587,
-      secure: false, // true for 465, false for other ports
+      host: `Smtp.gmail.com`,
+      port: 465,
+      secure: true,
       auth: {
-        user: EMAIL, // generated ethereal user
-        pass: PASSWORD, // generated ethereal password
+        user: process.env.EMAIL,
+        pass: process.env.PASSWORD,
       },
-    });
-    await transporter.sendMail({
-      from: EMAIL, // sender address
-      to: data.email, // list of receivers
-      subject: 'Hello ✔', // Subject line
-      text: `forgot password code is ${code}`, // plain text body
-    });
+    })
+    const info = await transporter.sendMail({
+      from: process.env.EMAIL,
+      to: data.email,
+      subject: 'Verification Code',
+      text: `verification code : ${code}`,
+    })
     const form: any = {
       code,
       email: data.email,
     }
     await generateCodePassword(form)
-    return response(res, `forgot password code is ${code}`, null, 200)
+    return response(res, `${info.response}forgot password code is ${code}`, null, 200)
   }
 }
 
