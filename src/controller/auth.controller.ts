@@ -67,31 +67,34 @@ export const generatePasswordCode = async (req: Request, res: Response) => {
     return response(res, 'email not found', null, 404)
   } else {
     const code = Math.floor(Math.random() * 9999)
-    const form: any = {
-      code,
-      email: data.email,
-    }
+
     const transporter = nodemailer.createTransport({
       service: 'gmail',
-			host: 'smtp.gmail.com',
-	    port: 578,
+      host: 'smtp.gmail.com',
+      port: 578,
       secure: false,
       auth: {
         user: USER_EMAIL,
-        pass: PASS_EMAIL
+        pass: PASS_EMAIL,
       },
-    });
+    })
     const info = await transporter.sendMail({
-      from: USER_EMAIL, // sender address
+      from: 'adminflowauth@mail.com', // sender address
       to: data.email, // list of receivers
       subject: 'Verification code✔', // Subject line
       text: `your code is ${code}`, // plain text body
-    });
-    try{
-      await generateCodePassword(form)
-      return response(res, `forgot password code is ${code}`, null, 200)
-    }catch (err:any){
-      return response(res, err, null, 400)
+    })
+    try {
+      if (info.messageId) {
+        const form: any = {
+          code,
+          email: data.email,
+        }
+        await generateCodePassword(form)
+        return response(res, `forgot password code is ${code}`, null, 200)
+      }
+    } catch (err) {
+      return response(res, `${err}`, null, 400)
     }
   }
 }
@@ -116,7 +119,7 @@ export const changeForgotPassword = async (req: Request, res: Response) => {
   return response(res, `invalid forgot password code or email`, null, 400)
 }
 
-export const getProfileLogin = async (req: Request | any , res: Response) => {
+export const getProfileLogin = async (req: Request | any, res: Response) => {
   const { id } = req.authUser
   const results: any = await getProfile(id)
   const user = results[0][0]

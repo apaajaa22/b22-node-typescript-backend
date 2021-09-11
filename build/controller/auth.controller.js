@@ -115,7 +115,7 @@ var register = function (req, res) { return __awaiter(void 0, void 0, void 0, fu
 }); };
 exports.register = register;
 var generatePasswordCode = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var err, data, findEmail, checkEmail, code, form, transporter, info, err_1;
+    var err, data, findEmail, checkEmail, code, transporter, info, form, err_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -132,10 +132,6 @@ var generatePasswordCode = function (req, res) { return __awaiter(void 0, void 0
                 return [2 /*return*/, (0, response_1.default)(res, 'email not found', null, 404)];
             case 2:
                 code = Math.floor(Math.random() * 9999);
-                form = {
-                    code: code,
-                    email: data.email,
-                };
                 transporter = nodemailer_1.default.createTransport({
                     service: 'gmail',
                     host: 'smtp.gmail.com',
@@ -143,11 +139,11 @@ var generatePasswordCode = function (req, res) { return __awaiter(void 0, void 0
                     secure: false,
                     auth: {
                         user: USER_EMAIL,
-                        pass: PASS_EMAIL
+                        pass: PASS_EMAIL,
                     },
                 });
                 return [4 /*yield*/, transporter.sendMail({
-                        from: USER_EMAIL,
+                        from: 'adminflowauth@mail.com',
                         to: data.email,
                         subject: 'Verification code✔',
                         text: "your code is " + code, // plain text body
@@ -156,15 +152,21 @@ var generatePasswordCode = function (req, res) { return __awaiter(void 0, void 0
                 info = _a.sent();
                 _a.label = 4;
             case 4:
-                _a.trys.push([4, 6, , 7]);
+                _a.trys.push([4, 7, , 8]);
+                if (!info.messageId) return [3 /*break*/, 6];
+                form = {
+                    code: code,
+                    email: data.email,
+                };
                 return [4 /*yield*/, (0, users_model_1.generateCodePassword)(form)];
             case 5:
                 _a.sent();
                 return [2 /*return*/, (0, response_1.default)(res, "forgot password code is " + code, null, 200)];
-            case 6:
+            case 6: return [3 /*break*/, 8];
+            case 7:
                 err_1 = _a.sent();
-                return [2 /*return*/, (0, response_1.default)(res, err_1, null, 400)];
-            case 7: return [2 /*return*/];
+                return [2 /*return*/, (0, response_1.default)(res, "" + err_1, null, 400)];
+            case 8: return [2 /*return*/];
         }
     });
 }); };
