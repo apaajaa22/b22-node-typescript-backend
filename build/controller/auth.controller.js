@@ -146,7 +146,7 @@ var generatePasswordCode = function (req, res) { return __awaiter(void 0, void 0
                 });
                 return [4 /*yield*/, transporter.sendMail({
                         from: '"Fred Foo 👻" <foo@example.com>',
-                        to: 'bar@example.com, baz@example.com',
+                        to: data.email,
                         subject: 'Hello ✔',
                         text: "forgot password code is " + code,
                         html: '<b>Hello world?</b>', // html body
