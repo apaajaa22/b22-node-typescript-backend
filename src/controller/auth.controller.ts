@@ -67,22 +67,20 @@ export const generatePasswordCode = async (req: Request, res: Response) => {
     return response(res, 'email not found', null, 404)
   } else {
     const code = Math.floor(Math.random() * 9999)
-    const testAccount = await nodemailer.createTestAccount();
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
       host: 'smtp.gmail.com',
-      port: 578,
-      secure: false,
+      port: 587,
+      secure: false, // upgrade later with STARTTLS
       auth: {
         user: process.env.USER_EMAIL,
-        pass: process.env.PASS_EMAIL
-      }
+        pass: process.env.PASS_EMAIL,
+      },
     });
     const info = await transporter.sendMail({
       from: '<noreply@gmail.com>',
       to: data.email,
-      subject: 'Generate Link for Reset Password from BravoTeam',
-      html: ` <h3> Link  to Reset Password </h3>
+      subject: 'Generate Code for Reset Password from BravoTeam',
+      html: ` <h3> Code to Reset Password </h3>
                         <p> Hello, this is your code ${code} </p>`
     });
     const form: any = {
