@@ -1,6 +1,5 @@
 import { Request, Response } from 'express'
 import response from '../helpers/response'
-import nodemailer from 'nodemailer'
 import {
   checkEmailModel,
   generateCodePassword,
@@ -14,7 +13,7 @@ import dotenv from 'dotenv'
 import jwt, { JwtHeader } from 'jsonwebtoken'
 import { validationResult } from 'express-validator'
 dotenv.config()
-const { APP_KEY, USER_EMAIL, PASS_EMAIL } = process.env
+const { APP_KEY } = process.env
 
 export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body
@@ -67,35 +66,12 @@ export const generatePasswordCode = async (req: Request, res: Response) => {
     return response(res, 'email not found', null, 404)
   } else {
     const code = Math.floor(Math.random() * 9999)
-
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      host: 'smtp.gmail.com',
-      port: 578,
-      secure: false,
-      auth: {
-        user: USER_EMAIL,
-        pass: PASS_EMAIL,
-      },
-    })
-    const info = await transporter.sendMail({
-      from: 'adminflowauth@mail.com', // sender address
-      to: data.email, // list of receivers
-      subject: 'Verification code✔', // Subject line
-      text: `your code is ${code}`, // plain text body
-    })
-    try {
-      if (info.messageId) {
-        const form: any = {
-          code,
-          email: data.email,
-        }
-        await generateCodePassword(form)
-        return response(res, `forgot password code is ${code}`, null, 200)
-      }
-    } catch (err) {
-      return response(res, `${err}`, null, 400)
+    const form: any = {
+      code,
+      email: data.email,
     }
+    await generateCodePassword(form)
+    return response(res, `forgot password code is ${code}`, null, 200)
   }
 }
 
@@ -119,7 +95,7 @@ export const changeForgotPassword = async (req: Request, res: Response) => {
   return response(res, `invalid forgot password code or email`, null, 400)
 }
 
-export const getProfileLogin = async (req: Request | any, res: Response) => {
+export const getProfileLogin = async (req: Request | any , res: Response) => {
   const { id } = req.authUser
   const results: any = await getProfile(id)
   const user = results[0][0]

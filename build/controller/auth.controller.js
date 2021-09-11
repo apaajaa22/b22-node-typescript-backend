@@ -41,14 +41,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getProfileLogin = exports.changeForgotPassword = exports.generatePasswordCode = exports.register = exports.login = void 0;
 var response_1 = __importDefault(require("../helpers/response"));
-var nodemailer_1 = __importDefault(require("nodemailer"));
 var users_model_1 = require("../model/users.model");
 var bcrypt_1 = __importDefault(require("bcrypt"));
 var dotenv_1 = __importDefault(require("dotenv"));
 var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 var express_validator_1 = require("express-validator");
 dotenv_1.default.config();
-var _a = process.env, APP_KEY = _a.APP_KEY, USER_EMAIL = _a.USER_EMAIL, PASS_EMAIL = _a.PASS_EMAIL;
+var APP_KEY = process.env.APP_KEY;
 var login = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var _a, email, password, err, findEmail, checkEmail, compare, payload, token;
     return __generator(this, function (_b) {
@@ -115,7 +114,7 @@ var register = function (req, res) { return __awaiter(void 0, void 0, void 0, fu
 }); };
 exports.register = register;
 var generatePasswordCode = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var err, data, findEmail, checkEmail, code, transporter, info, form, err_1;
+    var err, data, findEmail, checkEmail, code, form;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -132,41 +131,14 @@ var generatePasswordCode = function (req, res) { return __awaiter(void 0, void 0
                 return [2 /*return*/, (0, response_1.default)(res, 'email not found', null, 404)];
             case 2:
                 code = Math.floor(Math.random() * 9999);
-                transporter = nodemailer_1.default.createTransport({
-                    service: 'gmail',
-                    host: 'smtp.gmail.com',
-                    port: 578,
-                    secure: false,
-                    auth: {
-                        user: USER_EMAIL,
-                        pass: PASS_EMAIL,
-                    },
-                });
-                return [4 /*yield*/, transporter.sendMail({
-                        from: 'adminflowauth@mail.com',
-                        to: data.email,
-                        subject: 'Verification code✔',
-                        text: "your code is " + code, // plain text body
-                    })];
-            case 3:
-                info = _a.sent();
-                _a.label = 4;
-            case 4:
-                _a.trys.push([4, 7, , 8]);
-                if (!info.messageId) return [3 /*break*/, 6];
                 form = {
                     code: code,
                     email: data.email,
                 };
                 return [4 /*yield*/, (0, users_model_1.generateCodePassword)(form)];
-            case 5:
+            case 3:
                 _a.sent();
                 return [2 /*return*/, (0, response_1.default)(res, "forgot password code is " + code, null, 200)];
-            case 6: return [3 /*break*/, 8];
-            case 7:
-                err_1 = _a.sent();
-                return [2 /*return*/, (0, response_1.default)(res, "" + err_1, null, 400)];
-            case 8: return [2 /*return*/];
         }
     });
 }); };
