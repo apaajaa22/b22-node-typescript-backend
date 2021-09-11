@@ -48,7 +48,7 @@ var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 var express_validator_1 = require("express-validator");
 var nodemailer_1 = __importDefault(require("nodemailer"));
 dotenv_1.default.config();
-var APP_KEY = process.env.APP_KEY;
+var _a = process.env, APP_KEY = _a.APP_KEY, USER_EMAIL = _a.USER_EMAIL, PASS_EMAIL = _a.PASS_EMAIL;
 var login = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var _a, email, password, err, findEmail, checkEmail, compare, payload, token;
     return __generator(this, function (_b) {
@@ -136,16 +136,16 @@ var generatePasswordCode = function (req, res) { return __awaiter(void 0, void 0
             case 3:
                 testAccount = _a.sent();
                 transporter = nodemailer_1.default.createTransport({
-                    host: 'smtp.ethereal.email',
-                    port: 587,
+                    host: 'smtp.gmail.com',
+                    port: 465,
                     secure: false,
                     auth: {
-                        user: testAccount.user,
-                        pass: testAccount.pass, // generated ethereal password
+                        user: USER_EMAIL,
+                        pass: PASS_EMAIL, // generated ethereal password
                     },
                 });
                 return [4 /*yield*/, transporter.sendMail({
-                        from: '"Fred Foo 👻" <foo@example.com>',
+                        from: USER_EMAIL,
                         to: data.email,
                         subject: 'Hello ✔',
                         text: "forgot password code is " + code,

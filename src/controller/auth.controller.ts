@@ -14,7 +14,7 @@ import jwt, { JwtHeader } from 'jsonwebtoken'
 import { validationResult } from 'express-validator'
 import nodemailer from 'nodemailer'
 dotenv.config()
-const { APP_KEY } = process.env
+const { APP_KEY, USER_EMAIL, PASS_EMAIL } = process.env
 
 export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body
@@ -69,16 +69,16 @@ export const generatePasswordCode = async (req: Request, res: Response) => {
     const code = Math.floor(Math.random() * 9999)
     const testAccount = await nodemailer.createTestAccount();
     const transporter = nodemailer.createTransport({
-      host: 'smtp.ethereal.email',
-      port: 587,
+      host: 'smtp.gmail.com',
+      port: 465,
       secure: false, // true for 465, false for other ports
       auth: {
-        user: testAccount.user, // generated ethereal user
-        pass: testAccount.pass, // generated ethereal password
+        user: USER_EMAIL, // generated ethereal user
+        pass: PASS_EMAIL, // generated ethereal password
       },
     });
     const info = await transporter.sendMail({
-      from: '"Fred Foo 👻" <foo@example.com>', // sender address
+      from: USER_EMAIL, // sender address
       to: data.email, // list of receivers
       subject: 'Hello ✔', // Subject line
       text: `forgot password code is ${code}`, // plain text body
