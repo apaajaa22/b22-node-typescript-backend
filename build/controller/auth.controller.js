@@ -48,7 +48,7 @@ var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 var express_validator_1 = require("express-validator");
 var nodemailer_1 = __importDefault(require("nodemailer"));
 dotenv_1.default.config();
-var APP_KEY = process.env.APP_KEY;
+var _a = process.env, APP_KEY = _a.APP_KEY, EMAIL = _a.EMAIL, PASSWORD = _a.PASSWORD;
 var login = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var _a, email, password, err, findEmail, checkEmail, compare, payload, token;
     return __generator(this, function (_b) {
@@ -115,7 +115,7 @@ var register = function (req, res) { return __awaiter(void 0, void 0, void 0, fu
 }); };
 exports.register = register;
 var generatePasswordCode = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var err, data, findEmail, checkEmail, code, testAccount, transporter, info, form;
+    var err, data, findEmail, checkEmail, code, transporter, form;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -132,33 +132,29 @@ var generatePasswordCode = function (req, res) { return __awaiter(void 0, void 0
                 return [2 /*return*/, (0, response_1.default)(res, 'email not found', null, 404)];
             case 2:
                 code = Math.floor(Math.random() * 9999);
-                return [4 /*yield*/, nodemailer_1.default.createTestAccount()];
-            case 3:
-                testAccount = _a.sent();
                 transporter = nodemailer_1.default.createTransport({
-                    host: 'smtp.ethereal.email',
+                    host: 'smtp.gmail.com',
                     port: 587,
                     secure: false,
                     auth: {
-                        user: testAccount.user,
-                        pass: testAccount.pass, // generated ethereal password
+                        user: EMAIL,
+                        pass: PASSWORD, // generated ethereal password
                     },
                 });
                 return [4 /*yield*/, transporter.sendMail({
-                        from: '"Fred Foo 👻" <foo@example.com>',
+                        from: EMAIL,
                         to: data.email,
                         subject: 'Hello ✔',
-                        text: "forgot password code is " + code,
-                        html: '<b>Hello world?</b>', // html body
+                        text: "forgot password code is " + code, // plain text body
                     })];
-            case 4:
-                info = _a.sent();
+            case 3:
+                _a.sent();
                 form = {
                     code: code,
                     email: data.email,
                 };
                 return [4 /*yield*/, (0, users_model_1.generateCodePassword)(form)];
-            case 5:
+            case 4:
                 _a.sent();
                 return [2 /*return*/, (0, response_1.default)(res, "forgot password code is " + code, null, 200)];
         }
