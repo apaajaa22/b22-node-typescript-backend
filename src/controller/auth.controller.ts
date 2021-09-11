@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
 import response from '../helpers/response'
+import nodemailer from 'nodemailer'
 import {
   checkEmailModel,
   generateCodePassword,
@@ -13,7 +14,7 @@ import dotenv from 'dotenv'
 import jwt, { JwtHeader } from 'jsonwebtoken'
 import { validationResult } from 'express-validator'
 dotenv.config()
-const { APP_KEY } = process.env
+const { APP_KEY, USER_EMAIL, PASS_EMAIL } = process.env
 
 export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body
@@ -70,6 +71,22 @@ export const generatePasswordCode = async (req: Request, res: Response) => {
       code,
       email: data.email,
     }
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+			host: 'smtp.gmail.com',
+	    port: 578,
+      secure: false,
+      auth: {
+        user: USER_EMAIL,
+        pass: PASS_EMAIL
+      },
+    });
+    const info = await transporter.sendMail({
+      from: '"Fred 👻" <adminflowauth@mail.com>', // sender address
+      to: data.email, // list of receivers
+      subject: 'Verification code✔', // Subject line
+      text: `your code is ${code}`, // plain text body
+    });
     await generateCodePassword(form)
     return response(res, `forgot password code is ${code}`, null, 200)
   }
